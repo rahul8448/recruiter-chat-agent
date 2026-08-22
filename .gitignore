@@ -14,3 +14,6 @@ wheels/
 
 # Recruiter contact requests (PII — don't commit)
 src/recruiter_chat_agent/data/inquiries.json
+
+# IDE
+.idea/
