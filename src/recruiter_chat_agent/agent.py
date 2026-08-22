@@ -46,12 +46,23 @@ def build_client() -> anthropic.Anthropic:
     so this only refuses when the client itself can't resolve any.
     """
     try:
-        return anthropic.Anthropic()
+        client = anthropic.Anthropic()
     except Exception as exc:
         raise ConfigurationError(
-            "Could not authenticate with the Anthropic API. Copy .env.example to .env "
-            "and set ANTHROPIC_API_KEY, or run `ant auth login`."
+            "Could not construct the Anthropic client: %s" % exc
         ) from exc
+
+    # The SDK doesn't validate credentials at construction — a client with
+    # no key builds fine and only fails on the first request. Warn now
+    # rather than letting every chat turn fail mysteriously later. This is
+    # a warning, not an error, because an `ant auth login` profile is
+    # resolved later and wouldn't show up on these attributes.
+    if client.api_key is None and getattr(client, "auth_token", None) is None:
+        logger.warning(
+            "No ANTHROPIC_API_KEY or ANTHROPIC_AUTH_TOKEN in the environment. "
+            "Requests will fail unless an `ant auth login` profile is available."
+        )
+    return client
 
 
 def run_turn(

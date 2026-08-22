@@ -28,9 +28,39 @@ from pathlib import Path
 # project itself, so put src/ on the path rather than requiring a build step.
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
+import logging  # noqa: E402
+
+from recruiter_chat_agent.config import has_api_credentials  # noqa: E402
+from recruiter_chat_agent.errors import RecruiterChatError  # noqa: E402
 from recruiter_chat_agent.web import create_app  # noqa: E402
 
-demo, launch_kwargs = create_app()
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger("app")
+
+# Unlike a local run, a Space has no `ant auth login` profile to fall back
+# on — the secret is the only way in. Fail immediately with a pointer to
+# where it's set, rather than starting a UI where every message errors.
+if not has_api_credentials():
+    log.error(
+        "ANTHROPIC_API_KEY is not set. On Hugging Face Spaces, add it under "
+        "Settings -> Variables and secrets, then restart the Space. "
+        "(NTFY_TOPIC and INQUIRIES_ENCRYPTION_KEY are optional but recommended.)"
+    )
+    raise SystemExit(1)
+
+try:
+    demo, launch_kwargs = create_app()
+except RecruiterChatError as exc:
+    # By far the most common first-deploy failure is a secret that hasn't
+    # been set yet. Say so in terms that match where it's actually
+    # configured — a Space has no .env file to point someone at.
+    log.error(
+        "%s\n\nOn Hugging Face Spaces, set this under "
+        "Settings -> Variables and secrets (ANTHROPIC_API_KEY is required; "
+        "NTFY_TOPIC and INQUIRIES_ENCRYPTION_KEY are optional).",
+        exc,
+    )
+    raise SystemExit(1) from exc
 
 # No inbrowser=True — there's no browser on the server. Spaces sets
 # GRADIO_SERVER_NAME / GRADIO_SERVER_PORT itself, so host and port are
