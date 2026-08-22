@@ -1,30 +1,31 @@
-"""Hugging Face Spaces entry point.
+"""Entry point for a hosted deployment.
 
-Spaces looks for `app.py` at the repo root, runs it, and serves whatever
-Gradio app it launches. Everything of substance lives in the package —
-this file only bridges the two, so the hosted app and a local
+Most platforms look for `app.py` at the repo root, run it, and serve
+whatever it launches. Everything of substance lives in the package — this
+file only bridges the two, so a hosted app and a local
 `recruiter-chat-web` run share exactly the same construction path
 (`web.create_app`).
 
-Configuration comes from the Space's *Settings → Variables and secrets*,
-which Spaces exposes as ordinary environment variables:
+Bind address and port come from GRADIO_SERVER_NAME / GRADIO_SERVER_PORT,
+which Gradio reads directly; most hosts set a $PORT you should map to the
+latter. The rest is configured with ordinary environment variables:
 
   ANTHROPIC_API_KEY         (secret, required)
   NTFY_TOPIC                (secret, strongly recommended — see below)
   INQUIRIES_ENCRYPTION_KEY  (secret, optional)
 
-**On free Spaces the filesystem is ephemeral**: `inquiries.json` is wiped
-whenever the Space restarts, sleeps, or is rebuilt. Set NTFY_TOPIC so each
+**Most free tiers have an ephemeral filesystem**: `inquiries.json` is wiped
+whenever the app restarts, sleeps, or is rebuilt. Set NTFY_TOPIC so each
 recruiter's details are pushed to your phone the moment they arrive, rather
-than existing only in a file that won't survive the next restart. With
-persistent storage attached, also set INQUIRIES_PATH=/data/inquiries.json.
+than existing only in a file that won't survive the next restart. Where a
+persistent volume is available, point INQUIRIES_PATH at it instead.
 """
 
 import sys
 from pathlib import Path
 
 # The package uses a src/ layout, which isn't importable from the repo root
-# on its own. Spaces installs requirements.txt but doesn't install this
+# on its own. Hosts that install requirements.txt don't install this
 # project itself, so put src/ on the path rather than requiring a build step.
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
@@ -42,9 +43,9 @@ log = logging.getLogger("app")
 # where it's set, rather than starting a UI where every message errors.
 if not has_api_credentials():
     log.error(
-        "ANTHROPIC_API_KEY is not set. On Hugging Face Spaces, add it under "
-        "Settings -> Variables and secrets, then restart the Space. "
-        "(NTFY_TOPIC and INQUIRIES_ENCRYPTION_KEY are optional but recommended.)"
+        "ANTHROPIC_API_KEY is not set. Add it to this deployment's environment "
+        "variables / secrets and restart. (NTFY_TOPIC and "
+        "INQUIRIES_ENCRYPTION_KEY are optional but recommended.)"
     )
     raise SystemExit(1)
 
@@ -55,14 +56,14 @@ except RecruiterChatError as exc:
     # been set yet. Say so in terms that match where it's actually
     # configured — a Space has no .env file to point someone at.
     log.error(
-        "%s\n\nOn Hugging Face Spaces, set this under "
-        "Settings -> Variables and secrets (ANTHROPIC_API_KEY is required; "
-        "NTFY_TOPIC and INQUIRIES_ENCRYPTION_KEY are optional).",
+        "%s\n\nSet this in the deployment's environment variables "
+        "(ANTHROPIC_API_KEY is required; NTFY_TOPIC and "
+        "INQUIRIES_ENCRYPTION_KEY are optional).",
         exc,
     )
     raise SystemExit(1) from exc
 
-# No inbrowser=True — there's no browser on the server. Spaces sets
-# GRADIO_SERVER_NAME / GRADIO_SERVER_PORT itself, so host and port are
-# left to Gradio to pick up from the environment.
+# No inbrowser=True — there's no browser on the server. Host and port
+# are left to Gradio to read from GRADIO_SERVER_NAME /
+# GRADIO_SERVER_PORT, which the platform sets.
 demo.launch(**launch_kwargs)
