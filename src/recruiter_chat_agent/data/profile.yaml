@@ -1,0 +1,183 @@
+# ---------------------------------------------------------------------------
+# Your professional profile.
+#
+# This is the ONLY file most people need to edit. The agent reads it at
+# startup and answers recruiter questions strictly from what's written here
+# (see tools.py) — it will not invent experience you haven't listed.
+#
+# Populated from Rahul_Sharma_CV_2026.pdf and linkedin.com/in/rahul-sharma-a8754326
+# on 2026-08-21. Review it — resume bullets were assigned to companies by
+# position in the PDF and may need re-checking, and `preferences` below is a
+# guess, not stated on either source.
+# ---------------------------------------------------------------------------
+
+candidate:
+  name: "Rahul Sharma"
+  headline: "Staff Software Engineer"
+  summary: >
+    Staff software engineer with 15+ years of experience across Java, Go,
+    Python, C, and C++, with a strong track record of driving projects from
+    conception to production. Skilled at collaborating with product teams to
+    translate requirements into scalable, event-driven technical solutions,
+    and passionate about mentoring peers and growing engineering talent.
+  location: "Hopkinton, MA"
+  contact:
+    email: "rahul8448@gmail.com"
+    phone: "+1 402-318-2071"
+    linkedin: "https://www.linkedin.com/in/rahul-sharma-a8754326/"
+    github: "TODO: https://github.com/yourhandle"
+    portfolio: "https://rahul8448.pythonanywhere.com"
+
+skills:
+  languages:
+    - "Java"
+    - "Go"
+    - "Python"
+    - "C"
+    - "C++"
+    - "SQL"
+  frameworks:
+    - "Spring Boot"
+    - "Spring MVC"
+    - "React"
+    - "JUnit"
+    - "TestNG"
+    - "OpenAPI"
+  infrastructure:
+    - "Azure"
+    - "GCP"
+    - "Docker"
+    - "Kubernetes"
+    - "Kafka"
+    - "Prometheus"
+    - "Git"
+    - "Datadog"
+  data:
+    - "PostgreSQL"
+  other:
+    - "Agile / Scrum"
+    - "Event-driven architecture"
+    - "Microservices"
+    - "REST APIs"
+    - "Code review"
+    - "Mentoring"
+    - "Technical interviewing"
+    - "On-call / production support"
+
+experience:
+  - company: "Shipt"
+    title: "Staff Software Engineer (Remote)"
+    start: "2022-03"
+    end: "Present"
+    highlights:
+      - "Led the design and development of multiple software projects from inception to production, driving technical direction and delivering high-quality, scalable solutions."
+      - "Designed, built, and maintained a high-performance Go-based microservice as part of an event-driven architecture using Kafka and Kubernetes."
+      - "Wrote RFCs and design documents to propose new features, address system improvements, and outline solutions for critical bugs."
+      - "Contributed to the architecture of additional services, focusing on observability, fault tolerance, and horizontal scalability."
+      - "Provided on-call support for production systems, diagnosing and resolving issues to maintain uptime and reliability."
+      - "Mentored junior engineers and conducted technical interviews to evaluate engineering candidates."
+
+  - company: "Mobile Heartbeat"
+    title: "Senior Software Engineer"
+    start: "2019-04"
+    end: "2022-03"
+    highlights:
+      - "Led an offshore engineering team based in India, overseeing backend architecture design, development, and support."
+      - "Architected and implemented Spring Boot-based microservices deployed on Azure using Kubernetes and Docker."
+      - "Reviewed technical design documents and pull requests to ensure high-quality code and architectural alignment."
+      - "Coordinated sprint planning, task prioritization, and agile ceremonies to drive efficient delivery."
+      - "Mentored junior engineers, fostering skill development and best engineering practices."
+
+  - company: "Wayfair"
+    title: "Software Engineer II"
+    start: "2017-10"
+    end: "2019-03"
+    highlights:
+      - "Designed, built, and supported finance and accounting batch processes to ensure reliable data operations."
+      - "Developed React-based UI applications for monitoring batch workflows and visualizing statistical data in real time."
+
+  - company: "Global Payments"
+    title: "Software Engineer"
+    start: "2016-01"
+    end: "2017-09"
+    highlights:
+      - "Built and supported Spring MVC-based e-commerce web applications for university clients."
+      - "Designed, built, and maintained a multi-tenant payment gateway enabling secure, scalable university e-commerce transactions."
+      - "Performed peer code reviews, giving feedback on code quality, design patterns, and best practices."
+
+  - company: "Cerner"
+    title: "Software Engineer"
+    start: "2013-08"
+    end: "2015-12"
+    highlights: []
+
+  - company: "Accenture"
+    title: "Software Engineer"
+    start: "2008-05"
+    end: "2010-06"
+    highlights: []
+
+projects:
+  - name: "Multi-Tenant Payment Client"
+    description: "A Spring MVC web application for secure, multi-tenant payment processing (the same system built out professionally at Global Payments)."
+    tech:
+      - "Java"
+      - "Spring MVC"
+    link: ""
+
+  - name: "iBUS Load Tester"
+    description: "A Java multithreaded load-testing application."
+    tech:
+      - "Java"
+      - "Multithreading"
+    link: ""
+
+  - name: "3D Stereoscopic Rendering in Java"
+    description: "A 3D stereoscopic rendering and visualization project built with JOGL/OpenGL."
+    tech:
+      - "Java"
+      - "JOGL"
+      - "OpenGL"
+    link: ""
+
+  - name: "Eudra GMP Batch"
+    description: "An XML processing system for GMP batch data."
+    tech:
+      - "Java"
+      - "XML"
+    link: ""
+
+  - name: "Nebraska Software Builders Challenge 2013"
+    description: "First-place winning project at the University of Nebraska-Lincoln's software building competition."
+    tech: []
+    link: ""
+
+education:
+  - institution: "University of Nebraska Lincoln"
+    degree: "Master of Science in Computer Science"
+    year: "2013"
+  - institution: "Bangalore University"
+    degree: "Bachelor of Engineering in Electronics and Communication"
+    year: "2008"
+
+certifications:
+  - "Microsoft Certified: Azure Fundamentals"
+
+preferences:
+  seeking: "Staff or Lead-level roles, with a clear path toward a People Manager role over the next few years"
+  work_type: "Open to remote, hybrid, or onsite — remote is preferred"
+  availability: "2 weeks notice"
+  work_authorization: "Currently on an H-1B visa with an approved I-140. Eligible for unlimited H1-B extensions."
+  looking_for: >
+    I'm looking for a Staff or Lead-level role where I can leverage my
+    technical expertise, leadership experience, and cross-functional
+    collaboration skills while continuing to grow as a leader. Ideally, I'd
+    like to join an organization that provides a clear path toward a People
+    Manager role over the next few years, with opportunities to mentor
+    others, lead teams, and take on increasing leadership responsibility.
+
+    I'm open to remote, hybrid, or onsite opportunities, although remote is
+    my preferred work arrangement. I'm particularly interested in roles
+    where I can have meaningful ownership, work closely with
+    cross-functional teams, and contribute to both strategic
+    decision-making and execution.
