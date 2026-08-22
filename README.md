@@ -1,3 +1,15 @@
+---
+title: Recruiter Chat Agent
+emoji: 💼
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+sdk_version: 6.25.0
+app_file: app.py
+pinned: false
+short_description: An agentic chat assistant that answers recruiters' questions
+---
+
 # recruiter-chat-agent
 
 An agentic chat — terminal or browser — that talks to recruiters about your

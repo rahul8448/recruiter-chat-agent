@@ -193,26 +193,31 @@ def build_demo(
     )
 
 
-def main() -> int:
-    """Entry point for `recruiter-chat-web`. Returns a process exit code."""
+def create_app() -> tuple[gr.ChatInterface, dict[str, object]]:
+    """Build the chat UI and the kwargs it should be launched with.
+
+    Shared by `main()` and by the Hugging Face Spaces entry point
+    (`app.py` at the repo root), so a hosted deployment and a local run
+    can't drift apart. Callers own the actual `demo.launch(...)`, because
+    what belongs there differs: locally we want to pop open a browser tab,
+    while a Space is already serving on its own host and port.
+
+    Raises RecruiterChatError if the profile or configuration is unusable.
+    """
     load_dotenv()
     # Configure logging from the raw env var first, so that a *bad* setting
     # further down is reported as a clean log line rather than a traceback.
     configure_logging(os.environ.get("LOG_LEVEL", "INFO"))
 
-    try:
-        settings = Settings.from_env()
-        name = candidate_name(settings)
-        if has_placeholder_values(settings):
-            logger.warning(
-                "%s's profile still contains 'TODO:' placeholder values — fill them "
-                "in before pointing recruiters at this.",
-                name,
-            )
-        client = build_client()
-    except RecruiterChatError as exc:
-        logger.error("%s", exc)
-        return 1
+    settings = Settings.from_env()
+    name = candidate_name(settings)
+    if has_placeholder_values(settings):
+        logger.warning(
+            "%s's profile still contains 'TODO:' placeholder values — fill them "
+            "in before pointing recruiters at this.",
+            name,
+        )
+    client = build_client()
 
     auth = parse_auth_credentials(settings.auth_raw)
     if auth is not None:
@@ -232,9 +237,31 @@ def main() -> int:
         "on" if settings.encryption_enabled else "off",
         "on" if settings.notifications_enabled else "off",
     )
+    if settings.notifications_enabled is False:
+        logger.warning(
+            "NTFY_TOPIC is not set. On a host with an ephemeral filesystem "
+            "(most free tiers), %s is wiped on restart — without push "
+            "notifications a recruiter's details could be lost.",
+            settings.inquiries_path.name,
+        )
 
-    system_prompt = build_system_prompt(name)
-    demo = build_demo(client, system_prompt, name, settings)
+    demo = build_demo(client, build_system_prompt(name), name, settings)
+    launch_kwargs: dict[str, object] = {
+        "theme": _THEME,
+        "css_paths": _STYLE_CSS_PATH,
+        "auth": auth,
+        "auth_message": f"Sign in to chat with {name}'s recruiting assistant.",
+    }
+    return demo, launch_kwargs
+
+
+def main() -> int:
+    """Entry point for `recruiter-chat-web`. Returns a process exit code."""
+    try:
+        demo, launch_kwargs = create_app()
+    except RecruiterChatError as exc:
+        logger.error("%s", exc)
+        return 1
 
     # Handle both stop signals by closing the server, which breaks Gradio
     # out of its blocking loop. SIGTERM is what a cloud platform sends on
@@ -249,16 +276,10 @@ def main() -> int:
 
     print("Starting the recruiter chat UI — press Ctrl+C to stop.\n")
     try:
-        # inbrowser=True: Gradio doesn't auto-open a tab by default, it
-        # just prints the local URL. theme/css_paths style the page — in
-        # Gradio 6.x these belong on launch(), not on ChatInterface().
-        demo.launch(
-            inbrowser=True,
-            theme=_THEME,
-            css_paths=_STYLE_CSS_PATH,
-            auth=auth,
-            auth_message=f"Sign in to chat with {name}'s recruiting assistant.",
-        )
+        # inbrowser=True is local-only: Gradio doesn't auto-open a tab by
+        # default, it just prints the URL. A hosted deployment (app.py)
+        # omits it, since there's no browser on the server.
+        demo.launch(inbrowser=True, **launch_kwargs)
     except KeyboardInterrupt:
         # Gradio's own shutdown path can raise a second KeyboardInterrupt
         # while it's mid-cleanup — swallow it rather than printing a raw
