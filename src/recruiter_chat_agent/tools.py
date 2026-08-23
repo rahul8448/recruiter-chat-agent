@@ -196,8 +196,9 @@ def get_work_authorization() -> str:
 @beta_tool
 @_tool_guard
 def get_contact_info() -> str:
-    """Get the candidate's contact details (email, LinkedIn, GitHub,
-    portfolio) for scheduling a call or following up.
+    """Get the candidate's contact details — whichever of email, phone,
+    LinkedIn, and GitHub they've listed — for scheduling a call or
+    following up.
     """
     contact = load_profile().get("candidate", {}).get("contact", {})
     return "\n".join(f"{k}: {v}" for k, v in contact.items())
